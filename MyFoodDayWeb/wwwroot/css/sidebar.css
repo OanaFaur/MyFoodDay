@@ -1,0 +1,31 @@
+﻿.border-right {
+    background-color: rgb(5, 68, 104);
+}
+
+.nav-link {
+    color: white;
+    font-family: georgia;
+    font-size: 20px;
+    position: relative;
+    left: 10px;
+}
+
+.navbar-brand {
+    color: white;
+    position: relative;
+    left: 10px;
+}
+
+.nav-item.li {
+
+}
+
+
+
+.d-flex .border-right .profile img {
+    display: block;
+    border-radius: 50%;
+    margin: 0 auto;
+    position: relative;
+    left: 1px;
+}
