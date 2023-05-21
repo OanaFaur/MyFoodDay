@@ -15,8 +15,6 @@ namespace MyFoodDay.Models
 
         public double ProteinsConsumed { get; set; }
 
-        //public string DayTime { get; set; }
-
         public DateTime Date { get; set; }
 
         public ConsumedProduct(string productName, double quantityConsumed, double caloriesConsumed, double proteindConsumed, DateTime date)
