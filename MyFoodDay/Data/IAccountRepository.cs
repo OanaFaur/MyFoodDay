@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Microsoft.AspNetCore.Identity;
+using MyFoodDay.Models;
 using System.Threading.Tasks;
 
 namespace MyFoodDay.Data
 {
-    interface IAccountRepository
+    public interface IAccountRepository
     {
+        Task<IdentityResult> CreateUserAsync(SignUpUserModel userModel);
+        Task<SignInResult> PasswordSignInAsync(SignInUser signInModel);
+        Task SignOutAsync();
+        Task<UserAdditionalInfo> GetUserAdditionalInfoByEmail(string email);
     }
 }

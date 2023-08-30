@@ -8,7 +8,10 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/sidebar.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/startbootstrap-simple-sidebar@5.1.2/css/simple-sidebar.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-pzjw8g+3PvJ1exacK1UgSlMA8czdk5jW37L8AdJpmeGn2bp0Mv2v+6W2T5PB1I5l" crossorigin="anonymous">
 
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-pzjw8g+3PvJ1exacK1UgSlMA8czdk5jW37L8AdJpmeGn2bp0Mv2v+6W2T5PB1I5l" crossorigin="anonymous"></script>
 
 </head>
 
@@ -30,14 +33,7 @@
                     </ul>
 
                     <ul class="navbar-nav ml-auto">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Account" asp-action="SignUp">
-                                Register
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Login">Login Here</a>
-                        </li>
+                        <partial name="LoginInfo" />
                     </ul>
 
                 </div>
@@ -68,7 +64,7 @@
                         <a class="nav-link" asp-area="" asp-controller="Product" asp-action="ShowProducts">Show Filtered Products</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Product" asp-action="DailyIntakeView">Dairy</a>
+                        <a class="nav-link" asp-area="" asp-controller="Product" asp-action="DailyIntake">Dairy</a>
                     </li>
                 </ul>
             </div>

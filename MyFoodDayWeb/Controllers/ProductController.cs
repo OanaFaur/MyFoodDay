@@ -1,19 +1,35 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MyFoodDay.Data;
 using MyFoodDay.Models;
+using MyFoodDayWeb.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace MyFoodDayWeb.Controllers
 {
     public class ProductController : Controller
     {
         IProductRepository productRepository;
+        INutrientIntakeRepository intakeRepository;
+        IAccountRepository accountReposotiry;
+        private readonly UserManager<IdentityUser> userManager;
 
-        public ProductController(IProductRepository productRepository)
+        public ProductController(
+            IProductRepository productRepository,
+            INutrientIntakeRepository intakeRepository,
+            IAccountRepository accountRepository,
+            UserManager<IdentityUser> userManager
+            )
         {
             this.productRepository = productRepository;
+            this.intakeRepository = intakeRepository;
+            this.accountReposotiry = accountRepository;
+            this.userManager = userManager;
         }
         // GET: ProductController
         public ActionResult Index()
@@ -28,16 +44,66 @@ namespace MyFoodDayWeb.Controllers
             return View(products);
         }
 
-        [HttpGet]
-        public IActionResult DailyIntake()
+        public async Task<IActionResult> AddConsumedProduct(string name)
         {
-            return View();
+            Product product = productRepository.FindByName(name);
+
+            string userEmail = User.FindFirstValue(ClaimTypes.Email);
+
+            IdentityUser currentUser = await userManager.FindByEmailAsync(userEmail);
+
+            EatenProduct consumedProduct = new()
+            {
+                ProductName = product.ProductName,
+                Date = DateTime.Today,
+                CaloriesConsumed = CountCalories(product.ProductName, product.Quantity),
+                ProteinsConsumed = CountProteins(product.ProductName, product.Quantity),
+                FatsConsumed = CountFats(product.ProductName, product.Quantity),
+                UserId = currentUser.Id
+            };
+
+            intakeRepository.AddConsumedProduct(consumedProduct);
+
+            return RedirectToAction("DailyIntake");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> DailyIntake(DateTime? dateTime)
+        {
+            string userEmail = User.FindFirstValue(ClaimTypes.Email);
+
+            IdentityUser currentUser = await userManager.FindByEmailAsync(userEmail);
+
+            DateTime selectedDate = dateTime.HasValue ? dateTime.Value : DateTime.Today;
+
+            DailyIntake viewIntake = new DailyIntake
+            {
+                CalorieNumber = CalculateCalories(selectedDate, currentUser.Id),
+                ProteinNumber = CalculateProteins(selectedDate, currentUser.Id),
+                Fats = CalculateFats(selectedDate, currentUser.Id),
+                DateTime = dateTime,
+            };
+
+            return View("DailyIntake", viewIntake);
         }
 
         [HttpPost]
-        public IActionResult DailyIntake(DateTime dateTime)
+        public async Task<IActionResult> DailyIntake(DateTime dateTime)
         {
-            return View();
+            string userEmail = User.FindFirstValue(ClaimTypes.Email);
+
+            IdentityUser currentUser = await userManager.FindByEmailAsync(userEmail);
+
+
+            DailyIntake viewIntake = new DailyIntake
+            {
+                CalorieNumber = CalculateCalories(dateTime, currentUser.Id),
+                ProteinNumber = CalculateProteins(dateTime, currentUser.Id),
+                Fats = CalculateFats(dateTime, currentUser.Id),
+                DateTime = dateTime,
+            };
+
+            return View("DailyIntake", viewIntake);
         }
 
         // GET: ProductController/Details/5
@@ -67,46 +133,52 @@ namespace MyFoodDayWeb.Controllers
             }
         }
 
-        // GET: ProductController/Edit/5
-        public ActionResult Edit(int id)
+        private double CountCalories(string name, double quantityConsumed)
         {
-            return View();
+            Product product = productRepository.FindByName(name);
+
+            return quantityConsumed * product.Calories / product.Quantity;
         }
 
-        // POST: ProductController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        private double CountProteins(string name, double quantityConsumed)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            Product product = productRepository.FindByName(name);
+
+            return quantityConsumed * product.Proteins / product.Quantity;
         }
 
-        // GET: ProductController/Delete/5
-        public ActionResult Delete(int id)
+        private double CountFats(string name, double quantityConsumed)
         {
-            return View();
+            Product product = productRepository.FindByName(name);
+
+            return quantityConsumed * product.Fats / product.Quantity;
         }
 
-        // POST: ProductController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        private double CalculateCalories(DateTime DateTime, string email)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            double totalCalories = intakeRepository
+                .GetDailyConsumedProducts(DateTime, email)
+                .Sum(x => x.CaloriesConsumed);
+
+            return totalCalories;
+        }
+
+        private double CalculateProteins(DateTime dateTime, string email)
+        {
+            double totalProteins = intakeRepository
+                .GetDailyConsumedProducts(dateTime, email)
+                .Sum(x => x.ProteinsConsumed);
+
+            return totalProteins;
+        }
+
+        private double CalculateFats(DateTime dateTime, string email)
+        {
+            double totalFats = intakeRepository
+                .GetDailyConsumedProducts(dateTime, email)
+                .Sum(x => x.FatsConsumed);
+
+            return totalFats;
         }
     }
 }

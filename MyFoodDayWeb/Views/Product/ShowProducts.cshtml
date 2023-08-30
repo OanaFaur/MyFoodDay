@@ -3,13 +3,30 @@
 @{
     ViewData["Title"] = "ShowProducts";
 }
+<head>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/showproducts.css" />
+    <meta name="viewport" content="width=device-width" />
+</head>
 
 <h1> Products </h1>
 
 
-<div>
-    Search for a food: <input id="search" />
-    <button onclick="search()">search</button>
+<div class="container">
+
+    <div class="row height d-flex justify-content-center align-items-center">
+
+        <div class="col-md-8">
+
+            <div class="search">
+                <i class="fa fa-search"></i>
+                <input id="search"type="text" class="form-control" placeholder="Have a question? Ask Now">
+                <button onclick="search()" class="btn btn-primary">Search</button>
+            </div>
+
+        </div>
+
+    </div>
 </div>
 
 <table class="table">
@@ -60,7 +77,7 @@
                 @Html.DisplayFor(modelItem => item.Fats)
             </td>
             <td>
-                <a class="btn btn-success" id="addButton" asp-controller="Products" asp-action="AddConsumedProduct" asp-route-name="@item.ProductName">Add</a>
+                <a class="btn btn-success" id="addButton" asp-controller="Product" asp-action="AddConsumedProduct" asp-route-name="@item.ProductName">Add</a>
             </td>
 
         </tr>

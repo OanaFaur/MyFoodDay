@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyFoodDay.DataContext;
 
 namespace MyFoodDay.Migrations
 {
     [DbContext(typeof(MyFoodContext))]
-    partial class MyFoodContextModelSnapshot : ModelSnapshot
+    [Migration("20230717130840_AddedProductPropertyToEatenProduct")]
+    partial class AddedProductPropertyToEatenProduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -231,6 +233,9 @@ namespace MyFoodDay.Migrations
                     b.Property<double>("FatsConsumed")
                         .HasColumnType("float");
 
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ProductName")
                         .HasColumnType("nvarchar(max)");
 
@@ -244,6 +249,8 @@ namespace MyFoodDay.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ConsumedProductId");
+
+                    b.HasIndex("ProductId");
 
                     b.ToTable("EatenProducts");
                 });
@@ -356,6 +363,15 @@ namespace MyFoodDay.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MyFoodDay.Models.EatenProduct", b =>
+                {
+                    b.HasOne("MyFoodDay.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("MyFoodDay.Models.UserAdditionalInfo", b =>

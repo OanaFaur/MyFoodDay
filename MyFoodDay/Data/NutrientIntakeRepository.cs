@@ -1,4 +1,8 @@
-﻿using MyFoodDay.Models;
+﻿using LiteDB;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using MyFoodDay.DataContext;
+using MyFoodDay.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,19 +13,32 @@ namespace MyFoodDay.Data
 {
     public class NutrientIntakeRepository : INutrientIntakeRepository
     {
-        public void AddConsumedProduct(ConsumedProduct consumedProduct)
+        private MyFoodContext foodContext = new MyFoodContext();
+
+        public void AddConsumedProduct(EatenProduct consumedProduct)
         {
-            throw new NotImplementedException();
+            foodContext.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.EatenProducts ON;");
+            foodContext.EatenProducts.Add(consumedProduct);
+            foodContext.SaveChanges();
+            foodContext.Database.ExecuteSqlRaw("SET IDENTITY_INSERT dbo.EatenProducts OFF;");
         }
 
-        public List<ConsumedProduct> GetConsumedProducts()
+        public List<EatenProduct> GetConsumedProducts
         {
-            throw new NotImplementedException();
+            get
+            {
+                return foodContext.EatenProducts.ToList();
+            }
         }
 
-        public IEnumerable<ConsumedProduct> GetDailyConsumedProducts(DateTime date)
+        public IEnumerable<EatenProduct> GetDailyConsumedProducts(DateTime date, string userId)
         {
-            throw new NotImplementedException();
+            return GetEatenProductByUser(userId).Where(x => x.Date == date);
+        }
+
+        public IEnumerable<EatenProduct> GetEatenProductByUser(string userId)
+        {
+            return GetConsumedProducts.Where(x => x.UserId ==userId);
         }
     }
 }

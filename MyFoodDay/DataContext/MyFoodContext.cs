@@ -22,5 +22,9 @@ namespace MyFoodDay.DataContext
         }
 
         public DbSet<Product> Products { get; set; }
+
+        public DbSet<UserAdditionalInfo> UserAdditionalInfo { get; set; }
+
+        public DbSet<EatenProduct> EatenProducts { get; set;}
     }
 }

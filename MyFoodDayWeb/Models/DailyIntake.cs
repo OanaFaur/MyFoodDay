@@ -10,6 +10,6 @@ namespace MyFoodDayWeb.Models
 
         public double Fats { get; set; }
 
-        public DateTime DateTime { get; set; }
+        public DateTime? DateTime { get; set; }
     }
 }

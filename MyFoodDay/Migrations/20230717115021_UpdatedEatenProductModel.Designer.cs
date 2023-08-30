@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyFoodDay.DataContext;
 
 namespace MyFoodDay.Migrations
 {
     [DbContext(typeof(MyFoodContext))]
-    partial class MyFoodContextModelSnapshot : ModelSnapshot
+    [Migration("20230717115021_UpdatedEatenProductModel")]
+    partial class UpdatedEatenProductModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -241,9 +243,11 @@ namespace MyFoodDay.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("ConsumedProductId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("EatenProducts");
                 });
@@ -356,6 +360,15 @@ namespace MyFoodDay.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MyFoodDay.Models.EatenProduct", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MyFoodDay.Models.UserAdditionalInfo", b =>

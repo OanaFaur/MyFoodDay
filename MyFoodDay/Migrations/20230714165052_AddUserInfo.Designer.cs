@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyFoodDay.DataContext;
 
 namespace MyFoodDay.Migrations
 {
     [DbContext(typeof(MyFoodContext))]
-    partial class MyFoodContextModelSnapshot : ModelSnapshot
+    [Migration("20230714165052_AddUserInfo")]
+    partial class AddUserInfo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -215,7 +217,7 @@ namespace MyFoodDay.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("MyFoodDay.Models.EatenProduct", b =>
+            modelBuilder.Entity("MyFoodDay.Models.ConsumedProduct", b =>
                 {
                     b.Property<int>("ConsumedProductId")
                         .ValueGeneratedOnAdd()
@@ -240,12 +242,9 @@ namespace MyFoodDay.Migrations
                     b.Property<double>("QuantityConsumed")
                         .HasColumnType("float");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("ConsumedProductId");
 
-                    b.ToTable("EatenProducts");
+                    b.ToTable("ConsumedProducts");
                 });
 
             modelBuilder.Entity("MyFoodDay.Models.Product", b =>
@@ -280,7 +279,7 @@ namespace MyFoodDay.Migrations
 
             modelBuilder.Entity("MyFoodDay.Models.UserAdditionalInfo", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
@@ -294,15 +293,15 @@ namespace MyFoodDay.Migrations
                     b.Property<double>("DailyProteinGoal")
                         .HasColumnType("float");
 
-                    b.Property<string>("UserId1")
+                    b.Property<string>("Email")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<double>("WeightGoal")
                         .HasColumnType("float");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("Email");
 
                     b.ToTable("UserAdditionalInfo");
                 });
@@ -362,7 +361,7 @@ namespace MyFoodDay.Migrations
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("Email");
 
                     b.Navigation("User");
                 });

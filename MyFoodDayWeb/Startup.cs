@@ -36,6 +36,8 @@ namespace MyFoodDayWeb
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<MyFoodContext>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<INutrientIntakeRepository, NutrientIntakeRepository>();
+            services.AddScoped<IAccountRepository, AccountRepository>();
             
         }
 
