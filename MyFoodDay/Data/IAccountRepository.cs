@@ -10,5 +10,9 @@ namespace MyFoodDay.Data
         Task<SignInResult> PasswordSignInAsync(SignInUser signInModel);
         Task SignOutAsync();
         Task<UserAdditionalInfo> GetUserAdditionalInfoByEmail(string email);
+
+        void CreateUserAdditionalInfoAsync(string email);
+
+        Task<UserAdditionalInfo> EditUserAdditionLInfo(string email, UserAdditionalInfo newInfo);
     }
 }

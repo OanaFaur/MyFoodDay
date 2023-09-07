@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace MyFoodDay.Migrations
 {
-    public partial class AddIdentity : Migration
+    public partial class ProductEatenProductAndUser : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -44,6 +44,25 @@ namespace MyFoodDay.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EatenProducts",
+                columns: table => new
+                {
+                    ConsumedProductId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    QuantityConsumed = table.Column<double>(type: "float", nullable: false),
+                    CaloriesConsumed = table.Column<double>(type: "float", nullable: false),
+                    ProteinsConsumed = table.Column<double>(type: "float", nullable: false),
+                    FatsConsumed = table.Column<double>(type: "float", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EatenProducts", x => x.ConsumedProductId);
                 });
 
             migrationBuilder.CreateTable(
@@ -170,6 +189,29 @@ namespace MyFoodDay.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "UserAdditionalInfo",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    DailyCalorieGoal = table.Column<double>(type: "float", nullable: false),
+                    DailyProteinGoal = table.Column<double>(type: "float", nullable: false),
+                    DailyFatGoal = table.Column<double>(type: "float", nullable: false),
+                    WeightGoal = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserAdditionalInfo", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserAdditionalInfo_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -208,6 +250,11 @@ namespace MyFoodDay.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserAdditionalInfo_UserId",
+                table: "UserAdditionalInfo",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -228,7 +275,13 @@ namespace MyFoodDay.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "EatenProducts");
+
+            migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "UserAdditionalInfo");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

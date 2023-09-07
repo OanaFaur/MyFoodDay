@@ -280,7 +280,7 @@ namespace MyFoodDay.Migrations
 
             modelBuilder.Entity("MyFoodDay.Models.UserAdditionalInfo", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
@@ -294,15 +294,16 @@ namespace MyFoodDay.Migrations
                     b.Property<double>("DailyProteinGoal")
                         .HasColumnType("float");
 
-                    b.Property<string>("UserId1")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("WeightGoal")
                         .HasColumnType("float");
 
-                    b.HasKey("UserId");
-
-                    b.HasIndex("UserId1");
+                    b.HasKey("Id");
 
                     b.ToTable("UserAdditionalInfo");
                 });
@@ -356,15 +357,6 @@ namespace MyFoodDay.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("MyFoodDay.Models.UserAdditionalInfo", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId1");
-
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

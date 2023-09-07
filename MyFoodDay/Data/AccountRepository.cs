@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MyFoodDay.DataContext;
 using MyFoodDay.Models;
+using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
 
 namespace MyFoodDay.Data
@@ -31,6 +32,39 @@ namespace MyFoodDay.Data
             return result;
         }
 
+        public void CreateUserAdditionalInfoAsync(string email)
+        {
+            var userInfo = new UserAdditionalInfo()
+            {
+                Email = email
+            };
+
+            foodContext.UserAdditionalInfo.Add(userInfo);
+
+            foodContext.SaveChangesAsync();
+        }
+
+        public async Task<UserAdditionalInfo> EditUserAdditionLInfo(string email, UserAdditionalInfo newInfo)
+        {
+            var user = await userManager.FindByNameAsync(email);
+            if (user == null)
+            {
+                return null;
+            }
+
+            UserAdditionalInfo userAdditionalInfo = await foodContext.UserAdditionalInfo
+                .FirstOrDefaultAsync(u => u.Email == user.Email);
+
+            userAdditionalInfo.DailyProteinGoal= newInfo.DailyProteinGoal;
+            userAdditionalInfo.Username = newInfo.Username;
+            userAdditionalInfo.WeightGoal = newInfo.WeightGoal;
+            userAdditionalInfo.DailyCalorieGoal = newInfo.DailyCalorieGoal;
+            userAdditionalInfo.DailyFatGoal = newInfo.DailyFatGoal;
+
+            await foodContext.SaveChangesAsync();
+            return userAdditionalInfo;
+        }
+
         public async Task<UserAdditionalInfo> GetUserAdditionalInfoByEmail(string email)
         {
             var user = await userManager.FindByEmailAsync(email);
@@ -40,10 +74,12 @@ namespace MyFoodDay.Data
                 return null;
             }
 
-            UserAdditionalInfo userAdditionalInfo = await foodContext.UserAdditionalInfo.FirstOrDefaultAsync(u => u.User.Email == user.Email);
-
+            UserAdditionalInfo userAdditionalInfo = await foodContext.UserAdditionalInfo
+                .FirstOrDefaultAsync(u => u.Email == user.Email);
+           
             return userAdditionalInfo;
         }
+
 
         public async Task<SignInResult> PasswordSignInAsync(SignInUser signInUser)
         {
@@ -58,3 +94,4 @@ namespace MyFoodDay.Data
         }
     }
 }
+

@@ -14,9 +14,9 @@ namespace MyFoodDayWeb.Controllers
 {
     public class ProductController : Controller
     {
-        IProductRepository productRepository;
-        INutrientIntakeRepository intakeRepository;
-        IAccountRepository accountReposotiry;
+        private readonly IProductRepository productRepository;
+        private readonly INutrientIntakeRepository intakeRepository;
+        private readonly IAccountRepository accountReposotiry;
         private readonly UserManager<IdentityUser> userManager;
 
         public ProductController(
@@ -42,6 +42,19 @@ namespace MyFoodDayWeb.Controllers
             List<Product> products = productRepository.GetProducts;
 
             return View(products);
+        }
+
+        [HttpGet]
+        public IActionResult AddProduct()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult AddProduct(Product product)
+        {
+            productRepository.AddProduct(product);
+            return View();
         }
 
         public async Task<IActionResult> AddConsumedProduct(string name)
@@ -94,7 +107,6 @@ namespace MyFoodDayWeb.Controllers
 
             IdentityUser currentUser = await userManager.FindByEmailAsync(userEmail);
 
-
             DailyIntake viewIntake = new DailyIntake
             {
                 CalorieNumber = CalculateCalories(dateTime, currentUser.Id),
@@ -104,33 +116,6 @@ namespace MyFoodDayWeb.Controllers
             };
 
             return View("DailyIntake", viewIntake);
-        }
-
-        // GET: ProductController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: ProductController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: ProductController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
         }
 
         private double CountCalories(string name, double quantityConsumed)

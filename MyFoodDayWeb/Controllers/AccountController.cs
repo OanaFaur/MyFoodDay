@@ -1,17 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using MyFoodDay.Data;
 using MyFoodDay.Models;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace MyFoodDayWeb.Controllers
 {
     public class AccountController : Controller
     {
-        IAccountRepository accountRepository;
+        private readonly IAccountRepository accountRepository;
+        private readonly UserManager<IdentityUser> userManager;
 
         public AccountController(IAccountRepository accountRepository)
         {
-            this.accountRepository = accountRepository;   
+            this.accountRepository = accountRepository;
         }
 
         [Route("signup")]
@@ -26,18 +29,21 @@ namespace MyFoodDayWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-
                 var result = await accountRepository.CreateUserAsync(userModel);
-                if(!result.Succeeded)
+                if (!result.Succeeded)
                 {
-                    foreach(var errorMessage in result.Errors)
+                    foreach (var errorMessage in result.Errors)
                     {
                         ModelState.AddModelError("", errorMessage.Description);
                     }
                 }
+
+                accountRepository.CreateUserAdditionalInfoAsync(userModel.Email);
+
                 ModelState.Clear();
             }
-            return View();
+
+            return RedirectToAction("Login","Account");
         }
 
         [Route("login")]
@@ -50,7 +56,7 @@ namespace MyFoodDayWeb.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(SignInUser signInUser)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 var result = await accountRepository.PasswordSignInAsync(signInUser);
                 if (result.Succeeded)
@@ -63,6 +69,24 @@ namespace MyFoodDayWeb.Controllers
 
             return View(signInUser);
         }
+
+        [Route("edit")]
+        public IActionResult EditAdditionalInfo()
+        {
+            return View();
+        }
+
+        [Route("edit")]
+        [HttpPost]
+        public async Task<IActionResult> EditAdditionLInfo(UserAdditionalInfo userInfo)
+        {
+
+            string userEmail = User.FindFirstValue(ClaimTypes.Email);
+            await accountRepository.EditUserAdditionLInfo(userEmail, userInfo);
+
+            return RedirectToAction("Index", "Home");
+        }
+
 
         public async Task<IActionResult> Logout()
         {

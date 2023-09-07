@@ -8,7 +8,6 @@ namespace MyFoodDay.Data
 {
     public class ProductRepository : IProductRepository
     {
-        private readonly LiteDatabase context = new LiteDatabase(@"Filename=E:\Projects\MyFoodDay\MyFoodDay\ProductDatabase.db;connection=shared");
         private MyFoodContext foodContext = new MyFoodContext();
         public ProductRepository()
         {
@@ -35,8 +34,6 @@ namespace MyFoodDay.Data
 
         public void AddProduct(Product product)
         {
-            var issues = context.GetCollection<Product>();
-
             Product newProduct;
 
             newProduct = new Product
@@ -49,7 +46,8 @@ namespace MyFoodDay.Data
                 MeasurementType = product.MeasurementType
             };
 
-            issues.Insert(newProduct);
+            foodContext.Add(newProduct);
+            foodContext.SaveChanges();
         }
     }
 }

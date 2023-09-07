@@ -10,8 +10,8 @@ using MyFoodDay.DataContext;
 namespace MyFoodDay.Migrations
 {
     [DbContext(typeof(MyFoodContext))]
-    [Migration("20230714165052_AddUserInfo")]
-    partial class AddUserInfo
+    [Migration("20230830131958_UpdatedUserAdditionalInfo")]
+    partial class UpdatedUserAdditionalInfo
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -217,7 +217,7 @@ namespace MyFoodDay.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("MyFoodDay.Models.ConsumedProduct", b =>
+            modelBuilder.Entity("MyFoodDay.Models.EatenProduct", b =>
                 {
                     b.Property<int>("ConsumedProductId")
                         .ValueGeneratedOnAdd()
@@ -242,9 +242,12 @@ namespace MyFoodDay.Migrations
                     b.Property<double>("QuantityConsumed")
                         .HasColumnType("float");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("ConsumedProductId");
 
-                    b.ToTable("ConsumedProducts");
+                    b.ToTable("EatenProducts");
                 });
 
             modelBuilder.Entity("MyFoodDay.Models.Product", b =>
@@ -294,14 +297,15 @@ namespace MyFoodDay.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("WeightGoal")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Email");
 
                     b.ToTable("UserAdditionalInfo");
                 });
@@ -355,15 +359,6 @@ namespace MyFoodDay.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("MyFoodDay.Models.UserAdditionalInfo", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("Email");
-
-                    b.Navigation("User");
                 });
 #pragma warning restore 612, 618
         }

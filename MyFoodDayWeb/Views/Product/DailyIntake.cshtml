@@ -16,7 +16,6 @@
 
 <table class="table">
 
-
     <h1>View your Intake</h1>
 
     <form asp-controller="Product" asp-action="DailyIntake" method="post">
@@ -29,7 +28,7 @@
                     <th colspan="3" style="text-align:center">
                         <a href="?dateTime=@(Model.DateTime != null ? Model.DateTime.Value.AddDays(-1).ToString("yyyy-MM-dd") : DateTime.Today.AddDays(-1).ToString("yyyy-MM-dd"))">&#x2190;</a>
                         @((Model.DateTime ?? DateTime.Today).ToString("M/d/yyyy"))
-                        <a href="?dateTime=@(Model.DateTime != null ? Model.DateTime.Value.AddDays(+1).ToString("yyyy-MM-dd") : DateTime.Today.AddDays(+1).ToString("yyyy-MM-dd"))">&#x2190;</a>
+                        <a href="?dateTime=@(Model.DateTime != null ? Model.DateTime.Value.AddDays(+1).ToString("yyyy-MM-dd") : DateTime.Today.AddDays(+1).ToString("yyyy-MM-dd"))">&#x2192;</a>
                         </th>
                 </tr>
                 <tr>

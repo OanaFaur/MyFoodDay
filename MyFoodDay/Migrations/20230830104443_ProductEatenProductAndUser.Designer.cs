@@ -10,8 +10,8 @@ using MyFoodDay.DataContext;
 namespace MyFoodDay.Migrations
 {
     [DbContext(typeof(MyFoodContext))]
-    [Migration("20230717115021_UpdatedEatenProductModel")]
-    partial class UpdatedEatenProductModel
+    [Migration("20230830104443_ProductEatenProductAndUser")]
+    partial class ProductEatenProductAndUser
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -243,11 +243,9 @@ namespace MyFoodDay.Migrations
                         .HasColumnType("float");
 
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("ConsumedProductId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("EatenProducts");
                 });
@@ -284,7 +282,7 @@ namespace MyFoodDay.Migrations
 
             modelBuilder.Entity("MyFoodDay.Models.UserAdditionalInfo", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
@@ -298,15 +296,15 @@ namespace MyFoodDay.Migrations
                     b.Property<double>("DailyProteinGoal")
                         .HasColumnType("float");
 
-                    b.Property<string>("UserId1")
+                    b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<double>("WeightGoal")
                         .HasColumnType("float");
 
-                    b.HasKey("UserId");
+                    b.HasKey("Id");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserAdditionalInfo");
                 });
@@ -362,20 +360,11 @@ namespace MyFoodDay.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MyFoodDay.Models.EatenProduct", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("MyFoodDay.Models.UserAdditionalInfo", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
